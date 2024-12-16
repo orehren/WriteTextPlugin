@@ -192,4 +192,4 @@ class WriteText(ActionBase):
             log.error(f"An error occured while trying to simulate a keypress {e}")
         
         return
-
+        
