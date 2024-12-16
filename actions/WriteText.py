@@ -17,7 +17,7 @@ from loguru import logger as log
 import os
 import pyclip
 
-import libxkbcommon.xkb as xkb # Modified import
+import xkbcommon.xkb as xkb # Corrected import
 from typing import List
 
 class WriteText(ActionBase):
