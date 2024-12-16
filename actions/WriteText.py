@@ -37,7 +37,7 @@ class WriteText(ActionBase):
         try:
             self.xkb_context = xkb.Context()
             self.xkb_keymap = self.xkb_context.keymap_new_from_names()
-            self.xkb_state = self.xkb_context.state_new(self.xkb_keymap)
+            self.xkb_state = self.xkb_keymap.state_new()
             log.debug("xkbcommon setup successful")
         except Exception as e:
             log.error(f"Failed to setup xkbcommon: {e}")
