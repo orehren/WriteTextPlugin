@@ -36,8 +36,8 @@ class WriteText(ActionBase):
     def _setup_xkb(self):
         try:
             self.xkb_context = xkb.Context()
-            keymap_str = xkb.Keymap.get_as_string(xkb.Keymap(self.xkb_context, xkb.KEYMAP_FORMAT_TEXT_V1), xkb.KEYMAP_FORMAT_TEXT_V1)
-            self.xkb_keymap = xkb.Keymap.from_string(self.xkb_context, keymap_str, xkb.KEYMAP_FORMAT_TEXT_V1, xkb.KEYMAP_COMPILE_NO_FLAGS)
+            keymap_str = xkb.Keymap.get_as_string(xkb.Keymap(self.xkb_context, xkb.Keymap.KEYMAP_FORMAT_TEXT_V1), xkb.Keymap.KEYMAP_FORMAT_TEXT_V1)
+            self.xkb_keymap = xkb.Keymap.from_string(self.xkb_context, keymap_str, xkb.Keymap.KEYMAP_FORMAT_TEXT_V1, xkb.KEYMAP_COMPILE_NO_FLAGS)
             self.xkb_state = xkb.State(self.xkb_keymap)
             log.debug("xkbcommon setup successful")
         except Exception as e:
