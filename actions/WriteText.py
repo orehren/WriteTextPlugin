@@ -47,18 +47,23 @@ class WriteText(ActionBase):
     
     def _get_evdev_keycodes(self, text: str) -> List[int]:
         if not self.xkb_state or not self.xkb_keymap:
-            log.error("xkbcommon is not set up correctly.")
-            return []
+             log.error("xkbcommon is not set up correctly.")
+             return []
 
         keycodes = []
         for char in text:
             utf32_char = ord(char)
-            keycode = self.xkb_keymap.key_by_name(char)
-
-            if not keycode:
+            
+            found_keycodes = []
+            for keycode in self.xkb_keymap:
+                if self.xkb_keymap.key_get_utf32(keycode) == utf32_char:
+                    found_keycodes.append(keycode)
+            
+            if not found_keycodes:
                 log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
             else:
-                keycodes.append(keycode)
+                keycodes.extend(found_keycodes)
+                
         return keycodes
             
     def get_custom_config_area(self):
