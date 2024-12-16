@@ -45,10 +45,12 @@ class WriteText(ActionBase):
             self.xkb_keymap = None
             self.xkb_state = None
     
-    def _get_evdev_keycodes(self, text: str) -> List[int]:
+   def _get_evdev_keycodes(self, text: str) -> List[int]:
         if not self.xkb_state or not self.xkb_keymap:
              log.error("xkbcommon is not set up correctly.")
              return []
+
+        log.debug(f"Keymap Attributes: {dir(self.xkb_keymap)}")
 
         keycodes = []
         for char in text:
