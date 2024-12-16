@@ -58,32 +58,23 @@ class WriteText(ActionBase):
 
         keycodes = []
         for char in text:
-          
-            keycode = self.xkb_keymap.key_by_name(char)
-            if not keycode:
-                log.warning(f"No keycode found for character: {char}")
-                continue
-          
-            layout_index = self.xkb_keymap.layout_get_index(keycode)
-            symbols = self.xkb_keymap.key_get_syms_by_level(keycode, layout_index, 0)
-            
             utf32_char = ord(char)
 
-            if not symbols:
-              log.warning(f"No symbol found for keycode: {keycode}")
-              continue
+            found_keycodes = []
+            for keycode in self.xkb_keymap:
+                symbols = self.xkb_keymap.key_get_syms_by_level(keycode, 0, 0)
+                if not symbols:
+                  continue
+
+                for symbol in symbols:
+                  if self.xkb_keymap.key_get_utf32(symbol) == utf32_char:
+                      found_keycodes.append(keycode)
+                      break
             
-            found_keycode = None
-            for symbol in symbols:
-              if self.xkb_keymap.key_get_utf32(symbol) == utf32_char:
-                  found_keycode = keycode
-                  break
-                
-            if not found_keycode:
+            if not found_keycodes:
                 log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
-            else:
-                keycodes.append(found_keycode)
-        
+            
+            keycodes.extend(found_keycodes)
         return keycodes
 
     def get_custom_config_area(self):
