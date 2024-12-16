@@ -35,10 +35,10 @@ class WriteText(ActionBase):
 
     def _setup_xkb(self):
         try:
-            log.debug(f"Context Attributes: {dir(xkb.Context)}")
+            #log.debug(f"Context Attributes: {dir(xkb.Context)}")
             self.xkb_context = xkb.Context()
-            log.debug(f"Context Attributes: {dir(xkb.Keymap)}")
-            self.xkb_keymap = xkb.keymap_new_from_names(self.xkb_context, "default", None, None, None, xkb.KEYMAP_COMPILE_NO_FLAGS)
+            #log.debug(f"Context Attributes: {dir(xkb.Keymap)}")
+	    self.xkb_keymap = self.xkb_context.keymap_new_from_names("default", None, None, None, xkb.KEYMAP_COMPILE_NO_FLAGS)
             self.xkb_state = xkb.State(self.xkb_keymap)
             log.debug("xkbcommon setup successful")
         except Exception as e:
