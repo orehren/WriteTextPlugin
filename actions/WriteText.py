@@ -36,7 +36,7 @@ class WriteText(ActionBase):
     def _setup_xkb(self):
         try:
             self.xkb_context = xkb.Context()
-            self.xkb_keymap = xkb.Keymap(self.xkb_context, xkb.KEYMAP_FORMAT_DEFAULT) # Changed constant
+            self.xkb_keymap = xkb.Keymap(self.xkb_context, XKB_KEYMAP_FORMAT_TEXT_V1) # Changed constantXKB_KEYMAP_FORMAT_TEXT_V1
             self.xkb_state = xkb.State(self.xkb_keymap)
             log.debug("xkbcommon setup successful")
         except Exception as e:
