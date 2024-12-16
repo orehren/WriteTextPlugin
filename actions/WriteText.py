@@ -17,7 +17,7 @@ from loguru import logger as log
 import os
 import pyclip
 
-from libxkbcommon import xkb
+from xkbcommon import xkb
 from typing import List
 
 class WriteText(ActionBase):
