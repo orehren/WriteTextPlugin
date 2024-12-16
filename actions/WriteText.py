@@ -55,12 +55,9 @@ class WriteText(ActionBase):
         if not self.xkb_state or not self.xkb_keymap:
              log.error("xkbcommon is not set up correctly.")
              return []
-        
-        log.debug(f"xkb Attributes: {dir(xkb)}")
 
         keycodes = []
         for char in text:
-            utf32_char = ord(char)
             
             found_keycodes = []
             for keycode in self.xkb_keymap:
@@ -69,15 +66,15 @@ class WriteText(ActionBase):
                     continue
 
                 for symbol in symbols:
-                    #if xkb.keysym_to_utf32(symbol) == utf32_char: # Removed for now, as we need to check the available methods
-                    #    found_keycodes.append(keycode)
-                    #    break
-                  pass
+                  if xkb.keysym_to_string(symbol) == char:
+                      found_keycodes.append(keycode)
+                      break
             
             if not found_keycodes:
-                log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
-            else:
-                keycodes.extend(found_keycodes)
+                log.warning(f"No keycode found for character: {char}")
+            
+            keycodes.extend(found_keycodes)
+        
         return keycodes
 
     def get_custom_config_area(self):
