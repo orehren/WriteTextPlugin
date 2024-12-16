@@ -33,32 +33,19 @@ class WriteText(ActionBase):
         self.set_media(media_path=os.path.join(self.plugin_base.PATH, "assets", "keyboard.png"))
         self._setup_xkb()
 
-#    def _setup_xkb(self):
-#        try:
-#            self.xkb_context = xkb.Context()
-#            self.xkb_keymap = self.xkb_context.keymap_new_from_names()
-#            self.xkb_state = self.xkb_keymap.state_new()
-#            log.debug("xkbcommon setup successful")
-#       except Exception as e:
-#           log.error(f"Failed to setup xkbcommon: {e}")
-#            self.xkb_context = None
-#            self.xkb_keymap = None
-#            self.xkb_state = None
-            
     def _setup_xkb(self):
         try:
             self.xkb_context = xkb.Context()
-            names = xkb.keymap_new_from_names(self.xkb_context, "default", None, None, None, xkb.KEYMAP_COMPILE_NO_FLAGS)
-            self.xkb_keymap = xkb.Keymap.from_string(self.xkb_context, xkb.Keymap.get_as_string(names, xkb.KEYMAP_FORMAT_TEXT_V1), xkb.KEYMAP_FORMAT_TEXT_V1, xkb.KEYMAP_COMPILE_NO_FLAGS)
-            self.xkb_state = xkb.State(self.xkb_keymap)
+            self.xkb_keymap = self.xkb_context.keymap_new_from_names()
+            self.xkb_state = self.xkb_keymap.state_new()
             log.debug("xkbcommon setup successful")
-        except Exception as e:
-            log.error(f"Failed to setup xkbcommon: {e}")
+       except Exception as e:
+           log.error(f"Failed to setup xkbcommon: {e}")
             self.xkb_context = None
             self.xkb_keymap = None
             self.xkb_state = None
-                        
-    def _get_evdev_keycodes(self, text: str) -> List[int]:
+    
+   def _get_evdev_keycodes(self, text: str) -> List[int]:
         if not self.xkb_state or not self.xkb_keymap:
              log.error("xkbcommon is not set up correctly.")
              return []
@@ -66,20 +53,14 @@ class WriteText(ActionBase):
         keycodes = []
         for char in text:
             utf32_char = ord(char)
+            keycode = self.xkb_keymap.key_by_name(char)
 
-            keycodes_for_char = []
-
-            for keycode in self.xkb_keymap.keycodes:
-                if self.xkb_keymap.key_get_utf32(keycode) == utf32_char:
-                     keycodes_for_char.append(keycode)
-
-            if not keycodes_for_char:
+            if not keycode:
                 log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
-            
-            keycodes.extend(keycodes_for_char)
-        
+            else:
+                keycodes.append(keycode)
         return keycodes
-        
+            
     def get_custom_config_area(self):
         self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
 
