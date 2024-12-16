@@ -57,7 +57,6 @@ class WriteText(ActionBase):
              return []
         
         log.debug(f"xkb Attributes: {dir(xkb)}")
-        log.debug(f"xkb Attributes: {dir(xkb_symbols)}")
 
         keycodes = []
         for char in text:
