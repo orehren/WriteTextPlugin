@@ -1,0 +1,8 @@
+{
+    "write-text-standalone.plugin.name": "Write Text Standalone",
+    "write-text-standalone.actions.write-text.name": "Write Text",
+    "actions.write-text.text.title": "Text:",
+    "actions.write-text.missing-permission.title": "Missing permission. Please add <a href=\"https://github.com/streamcontroller/osplugin?tab=readme-ov-file#hotkeys--write-text\">this</a> udev rule",
+    "actions.write-text.delay.title": "Delay",
+    "actions.write-text.delay.subtitle": "The delay between each keypress"
+}
