@@ -46,27 +46,26 @@ class WriteText(ActionBase):
             self.xkb_state = None
     
    def _get_evdev_keycodes(self, text: str) -> List[int]:
-        if not self.xkb_state or not self.xkb_keymap:
-             log.error("xkbcommon is not set up correctly.")
-             return []
+       if not self.xkb_state or not self.xkb_keymap:
+           log.error("xkbcommon is not set up correctly.")
+           return []
+       log.debug(f"Keymap Attributes: {dir(self.xkb_keymap)}")
 
-        log.debug(f"Keymap Attributes: {dir(self.xkb_keymap)}")
-
-        keycodes = []
-        for char in text:
-            utf32_char = ord(char)
+       keycodes = []
+       for char in text:
+           utf32_char = ord(char)
             
-            found_keycodes = []
-            for keycode in self.xkb_keymap:
-                if self.xkb_keymap.key_get_utf32(keycode) == utf32_char:
-                    found_keycodes.append(keycode)
+           found_keycodes = []
+           for keycode in self.xkb_keymap:
+               if self.xkb_keymap.key_get_utf32(keycode) == utf32_char:
+                   found_keycodes.append(keycode)
             
-            if not found_keycodes:
-                log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
-            else:
-                keycodes.extend(found_keycodes)
+           if not found_keycodes:
+               log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
+           else:
+               keycodes.extend(found_keycodes)
                 
-        return keycodes
+       return keycodes
             
     def get_custom_config_area(self):
         self.main_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, hexpand=True, vexpand=True, margin_top=5, margin_bottom=5, margin_start=5, margin_end=5)
