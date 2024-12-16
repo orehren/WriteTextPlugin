@@ -59,22 +59,23 @@ class WriteText(ActionBase):
         keycodes = []
         for char in text:
             utf32_char = ord(char)
-
             found_keycodes = []
             for keycode in self.xkb_keymap:
                 symbols = self.xkb_keymap.key_get_syms_by_level(keycode, 0, 0)
+                log.debug(f"Context Attributes: {dir(self.xkb_keymap.key_get_syms_by_level)}")
                 if not symbols:
-                  continue
+                    continue
 
                 for symbol in symbols:
-                  if self.xkb_keymap.key_get_utf32(symbol) == utf32_char:
-                      found_keycodes.append(keycode)
-                      break
+                    if xkb.keysym_to_utf32(symbol) == utf32_char:
+                        found_keycodes.append(keycode)
+                        break
             
             if not found_keycodes:
                 log.warning(f"No keycode found for character: {char} (UTF-32: {utf32_char})")
-            
-            keycodes.extend(found_keycodes)
+            else:
+                keycodes.extend(found_keycodes)
+        
         return keycodes
 
     def get_custom_config_area(self):
