@@ -68,7 +68,6 @@ class WriteText(ActionBase):
                 for symbol in symbols:
                   if xkb.keysym_to_string(symbol) == char:
                       found_keycodes.append(keycode)
-                      log.debug(f"Context Attributes: {dir(found_keycodes)}")
                       break
             
             if not found_keycodes:
@@ -168,6 +167,10 @@ class WriteText(ActionBase):
         if text is None:
             return
 
+        if self.plugin_base.ui is None:
+            self.show_error(1)
+            return
+
         delay = settings.get("delay", 0.01)
 
         if not self.xkb_state or not self.xkb_keymap:
@@ -177,18 +180,16 @@ class WriteText(ActionBase):
         keycodes = self._get_evdev_keycodes(text)
 
         if not keycodes:
-            log.warning("No keycodes found, aborting...")
-            return
-
+             log.warning("No keycodes found, aborting...")
+             return
+        
         try:
             for keycode in keycodes:
-                self.plugin_base.ui.keyboard_press(keycode, False)
-                sleep(delay)
-                self.plugin_base.ui.keyboard_release(keycode, False)
+              self.plugin_base.ui.keyboard_press(keycode, False)
+              sleep(delay)
+              self.plugin_base.ui.keyboard_release(keycode, False)
         except Exception as e:
-            log.error(
-                f"An error occured while trying to simulate a keypress {e}"
-            )
-
+            log.error(f"An error occured while trying to simulate a keypress {e}")
+        
         return
 
