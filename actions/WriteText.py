@@ -17,7 +17,7 @@ from loguru import logger as log
 import os
 import pyclip
 
-from xkbcommon import xkb
+import libxkbcommon.xkb as xkb # Modified import
 from typing import List
 
 class WriteText(ActionBase):
@@ -81,8 +81,8 @@ class WriteText(ActionBase):
 
         self.buffer.connect("changed", self.on_change)
 
-        if self.plugin_base.ui is None:
-            self.main_box.append(Gtk.Label(label=self.plugin_base.lm.get("actions.write-text.missing-permission.title"), use_markup=True,
+        
+        self.main_box.append(Gtk.Label(label=self.plugin_base.lm.get("actions.write-text.missing-permission.title"), use_markup=True,
                          css_classes=["bold", "warning"]))
         
         return self.main_box
@@ -124,10 +124,6 @@ class WriteText(ActionBase):
         settings = self.get_settings()
         text = settings.get("text")
         if text is None:
-            return
-
-        if self.plugin_base.ui is None:
-            self.show_error(1)
             return
 
         delay = settings.get("delay", 0.01)
