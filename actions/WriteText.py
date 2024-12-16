@@ -68,6 +68,7 @@ class WriteText(ActionBase):
                 for symbol in symbols:
                   if xkb.keysym_to_string(symbol) == char:
                       found_keycodes.append(keycode)
+                      log.debug(f"Context Attributes: {dir(found_keycodes)}")
                       break
             
             if not found_keycodes:
