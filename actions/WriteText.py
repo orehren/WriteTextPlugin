@@ -18,6 +18,7 @@ import os
 import pyclip
 
 import xkbcommon.xkb as xkb # Corrected import
+
 from typing import List
 
 class WriteText(ActionBase):
@@ -35,7 +36,7 @@ class WriteText(ActionBase):
     def _setup_xkb(self):
         try:
             self.xkb_context = xkb.Context()
-            self.xkb_keymap = xkb.Keymap.from_name(self.xkb_context, "default", xkb.KEYMAP_FORMAT_TEXT_V1)
+            self.xkb_keymap = xkb.Keymap(self.xkb_context, xkb.KEYMAP_FORMAT_TEXT_V1) # changed method call
             self.xkb_state = xkb.State(self.xkb_keymap)
             log.debug("xkbcommon setup successful")
         except Exception as e:
@@ -43,7 +44,7 @@ class WriteText(ActionBase):
             self.xkb_context = None
             self.xkb_keymap = None
             self.xkb_state = None
-            
+                        
     def _get_evdev_keycodes(self, text: str) -> List[int]:
         if not self.xkb_state or not self.xkb_keymap:
              log.error("xkbcommon is not set up correctly.")
