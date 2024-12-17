@@ -27,9 +27,6 @@ class WriteText(ActionBase):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.has_configuration = True
-        self.xkb_context = None
-        self.xkb_keymap = None
-        self.xkb_state = None
 
     def on_ready(self):
         self.set_media(
@@ -37,45 +34,6 @@ class WriteText(ActionBase):
                 self.plugin_base.PATH, "assets", "keyboard.png"
             )
         )
-        self._setup_xkb()
-
-    def _setup_xkb(self):
-        try:
-            self.xkb_context = xkb.Context()
-            self.xkb_keymap = self.xkb_context.keymap_new_from_names()
-            self.xkb_state = self.xkb_keymap.state_new()
-            log.debug("xkbcommon setup successful")
-        except Exception as e:
-            log.error(f"Failed to setup xkbcommon: {e}")
-            self.xkb_context = None
-            self.xkb_keymap = None
-            self.xkb_state = None
-
-    def _get_evdev_keycodes(self, text: str) -> List[int]:
-        if not self.xkb_state or not self.xkb_keymap:
-             log.error("xkbcommon is not set up correctly.")
-             return []
-
-        keycodes = []
-        for char in text:
-            
-            found_keycodes = []
-            for keycode in self.xkb_keymap:
-                symbols = self.xkb_keymap.key_get_syms_by_level(keycode, 0, 0)
-                if not symbols:
-                    continue
-
-                for symbol in symbols:
-                  if xkb.keysym_to_string(symbol) == char:
-                      found_keycodes.append(keycode)
-                      break
-            
-            if not found_keycodes:
-                log.warning(f"No keycode found for character: {char}")
-            
-            keycodes.extend(found_keycodes)
-        
-        return keycodes
 
     def get_custom_config_area(self):
         self.main_box = Gtk.Box(
@@ -173,23 +131,4 @@ class WriteText(ActionBase):
 
         delay = settings.get("delay", 0.01)
 
-        if not self.xkb_state or not self.xkb_keymap:
-            log.error("xkbcommon is not set up correctly. Can't proceed.")
-            return
-
-        keycodes = self._get_evdev_keycodes(text)
-
-        if not keycodes:
-             log.warning("No keycodes found, aborting...")
-             return
-        
-        try:
-            for keycode in keycodes:
-              self.plugin_base.ui.keyboard_press(keycode, False)
-              sleep(delay)
-              self.plugin_base.ui.keyboard_release(keycode, False)
-        except Exception as e:
-            log.error(f"An error occured while trying to simulate a keypress {e}")
-        
-        return
         
